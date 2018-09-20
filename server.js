@@ -17,8 +17,8 @@ app.use(bodyParser.json({limit: '50mb'}));
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors());
-app.use('/fileImage', express.static('fileImage'))
 
 
 // Configuring the database
