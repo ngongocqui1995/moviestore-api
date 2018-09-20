@@ -41,13 +41,7 @@ mongoose.connect(dbConfig.url)
 app.get('/', (req, res) => {
     res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
 });
-SwaggerExpress.create({appRoot: './docs/'}, function(err, swaggerExpress) {
-    if (err) { throw err; }
-    app.use(swaggerUI(swaggerExpress.runner.swagger));
 
-    // install middleware
-    swaggerExpress.register(app);
-});
 // listen for requhttps://swagger.io/docs/specification/data-models/data-types/ests
 app.listen(process.env.PORT || 3004, () => {
     console.log("Server is listening on port 3004");
