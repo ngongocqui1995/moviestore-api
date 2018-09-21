@@ -83,11 +83,8 @@ exports.findAll = (req, res) => {
 exports.findAllLimit = (req, res) => {
     let limit = Number(req.params.limit);
     Collection.find({}, { 
-        "videos.urlReal": 0, 
-        "videos.otherLink.urlReal": 0,
         part: 0,
         episodesCurrent: 0,
-        content: 0,
         contentImages: 0,
         releaseYear: 0,
         categories: 0,

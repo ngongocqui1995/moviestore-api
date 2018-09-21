@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const SwaggerExpress = require('swagger-express-mw');
 const swaggerUI = require('swagger-tools/middleware/swagger-ui')
+const path = require('path');
 
 // create express app
 const app = express();
