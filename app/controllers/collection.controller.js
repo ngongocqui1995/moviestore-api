@@ -9,21 +9,27 @@ exports.create = async(req, res) => {
         res.send({message: "body error"});
     }
 
-    let countries = JSON.parse(req.body.countries)
-    let categories = JSON.parse(req.body.categories)
-    let videos = JSON.parse(req.body.videos)
+    let countries = req.body.countries
+    let categories = req.body.categories
+    let videos = req.body.videos
     let responeCollection = await Collection.find({key: req.body.key})
     if(responeCollection.length > 0){
-        Collection.findByIdAndUpdate(responeCollection[0]._id, 
-            {videos:  videos}
-        , {new: true})
-        .then(result => {
-            console.log({message: "update ok"});
-            res.send({message: "update ok"});
-        }).catch(err => {
-            console.log({message: "update error"});
-            res.send({message: "update error"});
-        });
+        let kt = checkUpdateCollection(responeCollection[0].videos, videos)
+        if(kt){
+            Collection.findByIdAndUpdate(responeCollection[0]._id, 
+                {videos:  videos}
+            , {new: true})
+            .then(result => {
+                console.log({message: "update ok"});
+                res.send({message: "update ok"});
+            }).catch(err => {
+                console.log({message: "update error"});
+                res.send({message: "update error"});
+            });
+        }else{
+            console.log({message: "not update"})
+            res.send({message: "not update"});
+        }
     }else{
         const collection = new Collection({
             title: req.body.title,
@@ -82,28 +88,7 @@ exports.findAll = (req, res) => {
 // Lấy tất cả collection giới hạn số lượng
 exports.findAllLimit = (req, res) => {
     let limit = Number(req.params.limit);
-    Collection.find({}, { 
-        part: 0,
-        episodesCurrent: 0,
-        contentImages: 0,
-        releaseYear: 0,
-        categories: 0,
-        group: 0,
-        indexGroup: 0,
-        producer: 0,
-        fansub: 0,
-        followers: 0,
-        filmActor: 0,
-        filmDirector: 0,
-        page: 0,
-        status: 0,
-        countries: 0,
-        author: 0,
-        linkTrailer: 0,
-        startMusicName: 0,
-        finishMusicName: 0,
-        videos: 0
-    })
+    Collection.find({}, { "videos.urlReal": 0, "videos.otherLink.urlReal": 0 })
     .limit(limit)
     .then(result => {
        res.send(result);
@@ -456,4 +441,32 @@ exports.findTopViewYear = (req, res) => {
         console.log(err);
         res.status(500).json({error: err});
     });
+}
+
+function checkUpdateCollection(videosResponeMongodb, videosRequest){
+    let kt = false
+    if(videosRequest.length > videosResponeMongodb.length){
+        return true
+    }
+    for(let i=0; i<videosResponeMongodb.length; i++){
+        if(videosRequest[i].episodes.length > videosResponeMongodb[i].episodes.length){
+            kt = true
+            break
+        }
+    }
+    return kt
+}
+
+function checkUpdateCollection(videosResponeMongodb, videosRequest){
+    let kt = false
+    if(videosRequest.length > videosResponeMongodb.length){
+        return true
+    }
+    for(let i=0; i<videosResponeMongodb.length; i++){
+        if(videosRequest[i].episodes.length > videosResponeMongodb[i].episodes.length){
+            kt = true
+            break
+        }
+    }
+    return kt
 }
