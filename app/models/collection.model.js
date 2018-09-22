@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 const CollectionSchema = mongoose.Schema({
     title: String,
+    otherTitle: String,
     part: String,
     episodesCurrent: String,
     episodes: String,
