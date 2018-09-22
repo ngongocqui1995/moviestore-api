@@ -33,6 +33,7 @@ exports.create = async(req, res) => {
     }else{
         const collection = new Collection({
             title: req.body.title,
+            otherTitle: "",
             part: "",
             episodesCurrent: "",
             episodes: videos[0].episodes.length,
@@ -88,7 +89,27 @@ exports.findAll = (req, res) => {
 // Lấy tất cả collection giới hạn số lượng
 exports.findAllLimit = (req, res) => {
     let limit = Number(req.params.limit);
-    Collection.find({}, { "videos.urlReal": 0, "videos.otherLink.urlReal": 0 })
+    Collection.find({}, { 
+        part: 0,
+        contentImages: 0,
+        releaseYear: 0,
+        categories: 0,
+        group: 0,
+        indexGroup: 0,
+        producer: 0,
+        fansub: 0,
+        followers: 0,
+        filmActor: 0,
+        filmDirector: 0,
+        page: 0,
+        status: 0,
+        countries: 0,
+        author: 0,
+        linkTrailer: 0,
+        startMusicName: 0,
+        finishMusicName: 0,
+        videos: 0
+    })
     .limit(limit)
     .then(result => {
        res.send(result);
