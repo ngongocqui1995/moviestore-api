@@ -2,33 +2,97 @@ var request = require('request');
 var moment = require('moment');
 const download = require('image-downloader')
 var fs = require('fs');
+const resizeImg = require('resize-img');
+const sharp = require('sharp');
 
 
-exports.dowloadImage = async(req, res) => {
+exports.resizeImageGlobal = async(req, res) => {
     let file = req.body.file
     let url = req.body.url
-    let img = await downloadIMG(url, file)
+    let width = Number(req.body.width)
+    let height = Number(req.body.height)
+    let img = await resizeImageGlobal(url, file, width, height)
     res.send({img: img})
 }
 
-async function downloadIMG(url, file) {
+exports.resizeImageOneSection = async(req, res) => {
+    let file = req.body.file
+    let url = req.body.url
+    let width = Number(req.body.width)
+    let height = Number(req.body.height)
+    let img = await resizeImageOneSection(url, file, width, height)
+    res.send({img: img})
+}
+
+async function resizeImageOneSection(url, file, width, height) {
     let name = ""
-    if (!fs.existsSync(`./fileImage/${file}`)){
-        fs.mkdirSync(`./fileImage/${file}`);
+    if (!fs.existsSync(`public/fileImage/${file}`)){
+        fs.mkdirSync(`public/fileImage/${file}`);
     }
-    const options = {
-        url: url,
-        dest: `./fileImage/${file}`                  
+    if (!fs.existsSync(`public/fileImage/${file}/${width}x${height}`)){
+        fs.mkdirSync(`public/fileImage/${file}/${width}x${height}`);
     }
 
     do{
         try {
-            const { filename, image } = await download.image(options)
-            name = filename // => /uploadImages/filename/image.jpg 
+            let image = await dowloadImage(url, file)
+            let buf = await sharp(image.file).resize(width, height).toBuffer()
+            fs.writeFileSync(`public/fileImage/${file}/${width}x${height}/${image.name}`, buf);
+            name = `fileImage/${file}/${width}x${height}/${image.name}`
         } catch (e) {
             console.error(e)
             name = ""
         }
     }while(name === "")
     return name
+}
+
+async function resizeImageGlobal(url, file, width, height) {
+    let name = ""
+    if (!fs.existsSync(`public/fileImage/${file}`)){
+        fs.mkdirSync(`public/fileImage/${file}`);
+    }
+    if (!fs.existsSync(`public/fileImage/${file}/${width}x${height}`)){
+        fs.mkdirSync(`public/fileImage/${file}/${width}x${height}`);
+    }
+
+    do{
+        try {
+            let image = await dowloadImage(url, file)
+            let buf = await resizeImg(fs.readFileSync(image.file), {width: 1600, height: 450})
+            fs.writeFileSync(`public/fileImage/${file}/${width}x${height}/${image.name}`, buf);
+            name = `fileImage/${file}/${width}x${height}/${image.name}`
+        } catch (e) {
+            console.error(e)
+            name = ""
+        }
+    }while(name === "")
+    return name
+}
+
+async function dowloadImage(url, file){
+    if (!fs.existsSync(`public/temps/${file}`)){
+        fs.mkdirSync(`public/temps/${file}`);
+    }
+    let infomartionImage = {
+        name: "",
+        file: ""
+    }
+    const options = {
+        url: url,
+        dest: `public/temps/${file}`                  
+    }
+
+    do{
+        try {
+            const { filename, image } = await download.image(options)
+            let indexbd = filename.lastIndexOf("\\")
+            infomartionImage.name = filename.substring(indexbd+1)
+            infomartionImage.file = filename
+        } catch (e) {
+            console.error(e)
+            infomartionImage.name = ""
+        }
+    }while(infomartionImage.name === "")
+    return infomartionImage
 }

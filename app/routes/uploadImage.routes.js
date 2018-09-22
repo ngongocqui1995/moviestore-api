@@ -1,6 +1,9 @@
 module.exports = (app) => {
     const image = require('../controllers/uploadImage.controller.js');
 
-    // Tạo 1 collection
-    app.post('/dowloadImage', image.dowloadImage);
+    
+    app.post('/resizeImageGlobal', image.resizeImageGlobal);
+
+    app.post('/resizeImageOneSection', image.resizeImageOneSection);
+
 }
