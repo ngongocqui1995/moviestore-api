@@ -4,6 +4,7 @@ const download = require('image-downloader')
 var fs = require('fs');
 const resizeImg = require('resize-img');
 const sharp = require('sharp');
+var sleep = require('system-sleep');
 
 
 exports.resizeImageGlobal = async(req, res) => {
@@ -27,7 +28,7 @@ exports.resizeImageOneSection = async(req, res) => {
 exports.dowloadImage = async(req, res) => {
     let file = req.body.file
     let url = req.body.url
-    let image = await dowloadImage(url, file, "public/fileImage")
+    let image = await dowloadImage(url, file, "./public/fileImage")
     res.send({img: `fileImage/${file}/${image.name}`})
 }
 
@@ -42,7 +43,7 @@ async function resizeImageOneSection(url, file, width, height) {
 
     do{
         try {
-            let image = await dowloadImage(url, file, "public/temps")
+            let image = await dowloadImage(url, file, "./public/temps")
             let buf = await sharp(image.file).resize(width, height).toBuffer()
             fs.writeFileSync(`public/fileImage/${file}/${width}x${height}/${image.name}`, buf);
             name = `fileImage/${file}/${width}x${height}/${image.name}`
@@ -65,7 +66,7 @@ async function resizeImageGlobal(url, file, width, height) {
 
     do{
         try {
-            let image = await dowloadImage(url, file, "public/temps")
+            let image = await dowloadImage(url, file, "./public/temps")
             let buf = await resizeImg(fs.readFileSync(image.file), {width: 1600, height: 450})
             fs.writeFileSync(`public/fileImage/${file}/${width}x${height}/${image.name}`, buf);
             name = `fileImage/${file}/${width}x${height}/${image.name}`
@@ -99,6 +100,7 @@ async function dowloadImage(url, file, urlFile){
         } catch (e) {
             console.error(e)
             infomartionImage.name = ""
+			sleep(1000)
         }
     }while(infomartionImage.name === "")
     return infomartionImage
