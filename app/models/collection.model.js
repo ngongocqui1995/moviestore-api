@@ -15,6 +15,7 @@ const CollectionSchema = mongoose.Schema({
     group: String,
     indexGroup: String,
     producer: String,
+    coverImage: String,
     imageMain: String,
     fansub: Array,
     followers: Intl,

@@ -46,6 +46,7 @@ exports.create = async(req, res) => {
             group: "",
             indexGroup: 1,
             producer: "",
+            coverImage: req.body.imgMain,
             imageMain: req.body.img,
             fansub: [],
             followers: 0,
