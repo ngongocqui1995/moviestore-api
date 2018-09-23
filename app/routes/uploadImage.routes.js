@@ -6,4 +6,6 @@ module.exports = (app) => {
 
     app.post('/resizeImageOneSection', image.resizeImageOneSection);
 
+    app.post('/dowloadImage', image.dowloadImage);
+
 }

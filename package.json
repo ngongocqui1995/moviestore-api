@@ -23,7 +23,9 @@
     "node-rsa": "^1.0.1",
     "nodemon": "^1.18.3",
     "request": "^2.88.0",
+    "resize-img": "^1.1.2",
     "save": "^2.3.2",
+    "sharp": "^0.20.8",
     "swagger-express-mw": "^0.7.0",
     "swagger-tools": "^0.10.4",
     "vm": "^0.1.0"
