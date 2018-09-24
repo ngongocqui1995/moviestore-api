@@ -91,17 +91,15 @@ async function dowloadImage(url, file, urlFile){
         dest: `${urlFile}/${file}`                  
     }
 
-    do{
-        try {
-            const { filename, image } = await download.image(options)
-            let indexbd = filename.lastIndexOf("\\")
-            infomartionImage.name = filename.substring(indexbd+1)
-            infomartionImage.file = filename
-        } catch (e) {
-            console.error(e)
-            infomartionImage.name = ""
-			sleep(1000)
-        }
-    }while(infomartionImage.name === "")
+    try {
+        await download.image(options)
+        let indexbd = url.lastIndexOf("/")
+        infomartionImage.name = url.substring(indexbd+1)
+        infomartionImage.file = `${urlFile}/${file}/${infomartionImage.name}`
+    } catch (e) {
+        console.error(e)
+        infomartionImage.name = ""
+        sleep(1000)
+    }
     return infomartionImage
 }
