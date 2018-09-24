@@ -96,6 +96,7 @@ async function dowloadImage(url, file, urlFile){
         let indexbd = url.lastIndexOf("/")
         infomartionImage.name = url.substring(indexbd+1)
         infomartionImage.file = `${urlFile}/${file}/${infomartionImage.name}`
+        sleep(1000)
     } catch (e) {
         console.error(e)
         infomartionImage.name = ""
