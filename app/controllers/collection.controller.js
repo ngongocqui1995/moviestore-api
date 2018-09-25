@@ -9,9 +9,9 @@ exports.create = async(req, res) => {
         res.send({message: "body error"});
     }
 
-    let countries = req.body.countries
-    let categories = req.body.categories
-    let videos = req.body.videos
+    let countries = JSON.parse(req.body.countries)
+    let categories = JSON.parse(req.body.categories)
+    let videos = JSON.parse(req.body.videos)
     let responeCollection = await Collection.find({key: req.body.key})
     if(responeCollection.length > 0){
         let kt = checkUpdateCollection(responeCollection[0].videos, videos)
