@@ -25,6 +25,7 @@ const dbConfig = require('./config/database.config.js');
 const mongoose = require('mongoose');
 
 require('./app/routes/collection.routes.js')(app);
+require('./app/routes/collectiontv.routes.js')(app);
 require('./app/routes/uploadImage.routes.js')(app);
 
 mongoose.Promise = global.Promise;
