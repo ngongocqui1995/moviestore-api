@@ -45,6 +45,6 @@ app.get('/', (req, res) => {
 });
 
 // listen for requhttps://swagger.io/docs/specification/data-models/data-types/ests
-app.listen(process.env.PORT || 3004, () => {
-    console.log("Server is listening on port 3004");
+app.listen(process.env.PORT || 4000, () => {
+    console.log("Server is listening on port 4000");
 });
