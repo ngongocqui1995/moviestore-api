@@ -8,4 +8,6 @@ module.exports = (app) => {
 
     app.post('/dowloadImage', image.dowloadImage);
 
+    app.get('/fileImage/:folder/:filename/:width/:height', image.resizeImagePublic);
+
 }

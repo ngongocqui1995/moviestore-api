@@ -5,6 +5,28 @@ var fs = require('fs');
 const resizeImg = require('resize-img');
 const sharp = require('sharp');
 var sleep = require('system-sleep');
+const Jimp = require("jimp")
+
+
+exports.resizeImagePublic = async(req, res) => {
+    let width = Number(req.params.width)
+    let height = Number(req.params.height)
+    if(!isNaN(width) && !isNaN(height)){
+        Jimp.read(`public/fileImage/${req.params.folder}/${req.params.filename}`, function(err,img){
+            if (err) throw err;
+            img.resize(width, height).getBuffer( Jimp.AUTO , function(e, imgBuffer){
+                if(e)throw e
+                res.writeHead(200, {
+                    'Content-Type': img.getMIME(),
+                    'Content-Length': imgBuffer.length
+                });
+                res.end(imgBuffer)  
+            });
+        });
+    }else{
+        res.send()
+    }
+}
 
 
 exports.resizeImageGlobal = async(req, res) => {

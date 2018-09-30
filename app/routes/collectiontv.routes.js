@@ -2,7 +2,7 @@ module.exports = (app) => {
     const collection = require('../controllers/collectiontv.controller.js');
   
     // Lấy tất cả các thể loại
-    app.get('/collectiontv/categories', collection.getAllCategory);
+    app.get('/collection/categories', collection.getAllCategory);
 
     // Lấy danh sách từng bộ phim trong môt thể loại trang home
     app.get('/collectiontv/list/the-loai/:keyCategories/:codeCategories', collection.getListAllMovie);

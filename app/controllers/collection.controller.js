@@ -5,6 +5,10 @@ var moment = require('moment');
 
 // Tạo 1 collection
 exports.create = async(req, res) => {
+    if(!req.body.title) {
+        res.send({message: "body error"});
+    }
+
     let countries = JSON.parse(req.body.countries)
     let categories = JSON.parse(req.body.categories)
     let videos = JSON.parse(req.body.videos)
