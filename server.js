@@ -1,15 +1,69 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+let DDDoS = require('dddos');
+const request = require('request');
+
 
 // create express app
-const app = express();
+var app = express();
 var cors = require('cors');
+
 module.exports = app; // for testing
 
 // var config = {
 //   appRoot: __dirname // required config
 // };
+
+// let ddos = new DDDoS({
+//     checkInterval: 9000,
+//     rules: [
+//         // { /*Allow 4 requests accessing the application API per checkInterval*/
+//         //     regexp: "^/api.*",
+//         //     flags: "i",
+//         //     maxWeight: 4,
+//         //     queueSize: 4 /*If request limit is exceeded, new requests are added to the queue*/
+//         // },
+//         // { /*Only allow 1 search request per check interval.*/
+//         //     string: "/action/search",
+//         //     maxWeight: 1
+//         // },
+//         { /*Allow up to 16 other requests per check interval.*/
+//             regexp: ".*",
+//             maxWeight: 900,
+//         }
+//     ]
+// });
+
+// var i = 0
+// var giayDB
+// var giayKT
+// var axios = require('axios')
+//   setInterval(() => {
+//     // ddos.request('127.0.0.1', '/', (errorCode, errorData) => {
+//     //     i=i+1
+//     //     if(i===1) giayDB = (new Date).getSeconds()
+//     //     giayKT = (new Date).getSeconds()
+//     //   console.log(`Oops, DDoS! [${errorCode}] ${errorData} ${(new Date).getSeconds()} request:${i} giaybd=${giayDB}:${giayKT}`);
+//     // }, () => {
+//     //     i=i+1
+//     //     if(i===1) giayDB = (new Date).getSeconds()
+//     //     giayKT = (new Date).getSeconds()
+//     //   console.log(`The request has passed 1. request:${i} giaybd=${giayDB}:${giayKT}`);
+//     // });
+//     axios.get('https://tv.zing.vn/video/Hau-Due-Mat-Troi-Viet-Nam-Tap-1/IWZEO80F.html')
+//     .then((result) => {
+//         i=i+1
+//         if(i===1) giayDB = (new Date).getSeconds()
+//         giayKT = (new Date).getSeconds()
+//         console.log(`thành công ${(new Date).getSeconds()} request:${i} giaybd=${giayDB}:${giayKT}`)
+//     })
+//     .catch((err) => {
+//         console.log("lỗi")
+//     })
+// }, 1);  
+
+// app.use(ddos.express());
 
 // parse requests of content-type - application/json
 app.use(bodyParser.json({limit: '50mb'}));
@@ -26,6 +80,7 @@ const mongoose = require('mongoose');
 
 require('./app/routes/collection.routes.js')(app);
 require('./app/routes/collectiontv.routes.js')(app);
+require('./app/routes/collectionah.routes.js')(app);
 require('./app/routes/uploadImage.routes.js')(app);
 
 mongoose.Promise = global.Promise;

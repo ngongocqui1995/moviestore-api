@@ -5,24 +5,31 @@ var fs = require('fs');
 const resizeImg = require('resize-img');
 const sharp = require('sharp');
 var sleep = require('system-sleep');
-const Jimp = require("jimp")
-
 
 exports.resizeImagePublic = async(req, res) => {
     let width = Number(req.params.width)
     let height = Number(req.params.height)
+    let path = `public/fileImage/${req.params.folder}/${req.params.filename}`
+    let type = getTypeImge(req.params.filename)
     if(!isNaN(width) && !isNaN(height)){
-        Jimp.read(`public/fileImage/${req.params.folder}/${req.params.filename}`, function(err,img){
-            if (err) throw err;
-            img.resize(width, height).getBuffer( Jimp.AUTO , function(e, imgBuffer){
-                if(e)throw e
-                res.writeHead(200, {
-                    'Content-Type': img.getMIME(),
-                    'Content-Length': imgBuffer.length
-                });
-                res.end(imgBuffer)  
+        if (fs.existsSync(path)) {
+            fs.readFile(path, function(err, data) {
+                if(err) res.send()
+                resizeImg(data, {width: width, height: height})
+                .then(buf => {
+                    res.writeHead(200, {
+                        'Content-Type': `image/${type}`,
+                        'Content-Length': buf.length
+                    });
+                    res.end(buf)
+                })
+                .catch((err) => {
+                    res.send()
+                })
             });
-        });
+        }else{
+            res.send()
+        }
     }else{
         res.send()
     }
@@ -52,6 +59,12 @@ exports.dowloadImage = async(req, res) => {
     let url = req.body.url
     let image = await dowloadImage(url, file, "./public/fileImage")
     res.send({img: `fileImage/${file}/${image.name}`})
+}
+
+function getTypeImge(filename){
+    let indexbd = filename.lastIndexOf('.')
+    let type = filename.substring(indexbd+1)
+    return type
 }
 
 async function resizeImageOneSection(url, file, width, height) {

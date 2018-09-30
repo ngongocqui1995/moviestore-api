@@ -1,142 +1,151 @@
 var moment = require('moment');
 var axios = require('axios');
-var delay = require('delay');
 var jsdom = require("jsdom");
 var vm = require('vm');
 
 var { JSDOM } = jsdom;
 
 exports.getAllCategory = async(req, res) => {
-    let response = await axios.get('https://tv.zing.vn/')
-    let data = await response.data
-    if(data){
+    axios.get('https://tv.zing.vn/')
+    .then((response) => {
+        let data = response.data
         let categories = getAllCategory(data)
         res.send(categories)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getInformationCollection = async(req, res) => {
     let keyCollection = req.params.keyCollection
-    let response = await axios.get(`https://tv.zing.vn/${keyCollection}`)
-    let data = await response.data
-    if(data){
-        let information = await getInformationCollection(data)
+    axios.get(`https://tv.zing.vn/${keyCollection}`)
+    .then((response) => {
+        let data = response.data
+        let information = getInformationCollection(data)
         res.send(information)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getPrivateCategory = async(req, res) => {
     let keyCategories = req.params.keyCategories
     let codeCategories = req.params.codeCategories
-    let response = await axios.get(`https://tv.zing.vn/the-loai/${keyCategories}/${codeCategories}.html`)
-    let data = await response.data
-    if(data){   
+    axios.get(`https://tv.zing.vn/the-loai/${keyCategories}/${codeCategories}.html`)
+    .then((response) => {
+        let data = response.data
         let categories = getPrivateCategory(data)
         res.send(categories)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getNumberPage = async(req, res) => {
     let keyCategories = req.params.keyCategories
     let codeCategories = req.params.codeCategories
-    let response = await axios.get(`https://tv.zing.vn/the-loai/${keyCategories}/${codeCategories}.html`)
-    let data = await response.data
-    if(data){   
+    axios.get(`https://tv.zing.vn/the-loai/${keyCategories}/${codeCategories}.html`)
+    .then((response) => {
+        let data = response.data
         let numberPage = getNumberPage(data)
         res.send(numberPage)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getAllMovieLimit = async(req, res) => {
     let keyCategories = req.params.keyCategories
     let codeCategories = req.params.codeCategories
     let indexPage = Number(req.params.indexPage)
-    let response = await axios.get(`https://tv.zing.vn/the-loai/${keyCategories}/${codeCategories}.html?&page=${indexPage}`)
-    let data = await response.data
-    if(data){   
-        let movies = await getAllMovie(data)
+    axios.get(`https://tv.zing.vn/the-loai/${keyCategories}/${codeCategories}.html?&page=${indexPage}`)
+    .then((response) => {
+        let data = response.data
+        let movies = getAllMovie(data)
         res.send(movies)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getListAllMovie = async(req, res) => {
     let keyCategories = req.params.keyCategories
     let codeCategories = req.params.codeCategories
-    let response = await axios.get(`https://tv.zing.vn/the-loai/${keyCategories}/${codeCategories}.html`)
-    let data = await response.data
-    if(data){   
+    axios.get(`https://tv.zing.vn/the-loai/${keyCategories}/${codeCategories}.html`)
+    .then((response) => {
+        let data = response.data
         let movies = getListAllMovie(data)
         res.send(movies)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getAllEpisodes = async(req, res) => {
     let keyCollection = req.params.keyCollection
-    let response = await axios.get(`https://tv.zing.vn/series/${keyCollection}`)
-    let data = await response.data
-    if(data){   
-        let page = await getNumberPage(data)
+    axios.get(`https://tv.zing.vn/series/${keyCollection}`)
+    .then(async(response) => {
+        let data = response.data
+        let page = getNumberPage(data)
         let episodes = await getAllEpisodes(data, page[0].page, keyCollection)
         episodes = episodes.reverse()
         res.send(episodes)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getAllEpisodesLimit = async(req, res) => {
     let keyCollection = req.params.keyCollection
     let limit = Number(req.params.limit)
     let indexPage = (Number(req.params.indexPage)-1)*limit
-    let response = await axios.get(`https://tv.zing.vn/series/${keyCollection}`)
-    let data = await response.data
-    if(data){   
-        let page = await getNumberPage(data)
-        let episodes = await getAllEpisodes(data, page[0].page, keyCollection)
+    axios.get(`https://tv.zing.vn/series/${keyCollection}`)
+    .then((response) => {
+        let data = response.data
+        let page = getNumberPage(data)
+        let episodes = getAllEpisodes(data, page[0].page, keyCollection)
         episodes = episodes.reverse()
         episodes = episodes.slice(indexPage, indexPage+limit)
         res.send(episodes)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getLinkVideo = async(req, res) => {
     let url = req.body.url
-    let response = await axios.get(url)
-    let data = await response.data
-    if(data){   
+    axios.get(url)
+    .then((response) => {
+        let data = response.data
         let links = getLinkVideo(data)
         res.send(links)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 exports.getAllEpisodesNotPaging = async(req, res) => {
     let keyCollection = req.params.keyCollection
     let index = req.params.index
-    let response = await axios.get(`https://tv.zing.vn/${keyCollection}`)
-    let data = await response.data
-    if(data){
+    axios.get(`https://tv.zing.vn/${keyCollection}`)
+    .then((response) => {
+        let data = response.data
         let episodes = getAllEpisodesNotPaging(data, index)
         episodes = episodes.reverse()
         res.send(episodes)
-    }else{
+    })
+    .catch((err) => {
         res.send({ message: "lỗi" })
-    }
+    })
 }
 
 function getAllEpisodesNotPaging(data, index){
