@@ -126,10 +126,13 @@ exports.getLinkVideo = async(req, res) => {
     .then((response) => {
         let data = response.data
         let links = getLinkVideo(data)
-        res.send(links)
+        let link = links[links.length-1].link
+        let indexkt = link.lastIndexOf("?")
+        link = link.substring(0, indexkt)
+        res.send({link: link})
     })
     .catch((err) => {
-        res.send({ message: "lỗi" })
+        res.send({ link: "" })
     })
 }
 
@@ -242,7 +245,7 @@ async function getAllEpisodes(data, page, keyCollection){
     return items
 }
 
-async function getInformationCollection(data){
+function getInformationCollection(data){
     let information = []
     const dom = new JSDOM(data)
 
@@ -337,15 +340,15 @@ function getItemsTagCategories(data){
     return items
 }
 
-async function getAllMovie(data){
+function getAllMovie(data){
     let dataCopy = data
     let movies = []
 
     const dom = new JSDOM(dataCopy)
     let divClassProgramItem = dom.window.document.getElementsByClassName('subtray block-item program-item')[0].children
     for(let i=0; i<divClassProgramItem.length; i++){
+
         let img = divClassProgramItem[i].getElementsByTagName('img')[0].getAttribute('src')
-        
         // lấy thông tin phim
         let divBoxDesciption = divClassProgramItem[i].getElementsByClassName('box-description')[0]
         let title = divBoxDesciption.getElementsByTagName('a')[0].textContent.trim()
