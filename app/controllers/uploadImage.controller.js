@@ -14,7 +14,7 @@ exports.resizeImagePublic = async(req, res) => {
     if(!isNaN(width) && !isNaN(height)){
         if (fs.existsSync(path)) {
             fs.readFile(path, function(err, data) {
-                if(err) res.send()
+                if(err) return res.send()
                 resizeImg(data, {width: width, height: height})
                 .then(buf => {
                     res.writeHead(200, {

@@ -146,9 +146,11 @@ exports.findAllLimit = (req, res) => {
 exports.findAllCollectionLimit = (req, res) => {
     let limit = Number(req.body.limit);
     let projection = req.body.projection
-    
-    if(!isNaN(limit)){
-        Collection.find({}, projection).sort({ updatedAt: -1 }).limit(limit)
+    let indexPage = Number(req.body.indexPage);
+    let index = indexPage === 1 ? 0 : Number(limit*indexPage - limit);
+
+    if(!isNaN(limit) && !isNaN(indexPage)){
+        Collection.find({}, projection).sort({ updatedAt: -1 }).limit(limit).skip(index)
         .then(result => {
             res.send(result);
         }).catch(err => {
