@@ -1,6 +1,12 @@
 module.exports = (app) => {
     const collection = require('../controllers/collection.controller.js');
 
+    // Lấy tất cả collection mới cập nhật giới hạn số lượng
+    app.post('/v1/collection/limit', collection.findAllCollectionLimit);
+
+
+
+
     // Tạo 1 collection
     app.post('/collection', collection.create);
 
@@ -9,9 +15,6 @@ module.exports = (app) => {
 
     // Lấy tất cả collection giới hạn số lượng
     app.get('/collection/limit/:limit', collection.findAllLimit);
-
-    // Lấy tất cả collection mới cập nhật giới hạn số lượng
-    app.get('/collectionLimit/:limit', collection.findAllCollectionLimit);
 
     // Lấy tất cả collection mới cập nhật theo thể loại
     app.get('/collection/categories/:keyCategory', collection.findAllCollectionCategory);

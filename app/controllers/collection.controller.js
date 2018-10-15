@@ -144,17 +144,20 @@ exports.findAllLimit = (req, res) => {
 
 // Lấy tất cả collection mới cập nhật có giới hạn số lượng
 exports.findAllCollectionLimit = (req, res) => {
-    let limit = Number(req.params.limit);
-    Collection.find({}, { "videos.urlReal": 0, "videos.otherLink.urlReal": 0 })
-    .sort({ updatedAt: -1 })
-    .limit(limit)
-    .then(result => {
-       res.send(result);
-    }).catch(err => {
-        res.status(500).send({
-            message: err.message || "Some error occurred while retrieving collections."
-        });
-    });
+    let limit = Number(req.body.limit);
+    let projection = req.body.projection
+    
+    if(!isNaN(limit)){
+        Collection.find({}, projection).sort({ updatedAt: -1 }).limit(limit)
+        .then(result => {
+            res.send(result);
+        }).catch(err => {
+            console.log(err)
+            res.send([])
+        })
+    }else{
+        res.send([])
+    }
 };
 
 // Lấy tất cả collection mới cập nhật theo thể loại
