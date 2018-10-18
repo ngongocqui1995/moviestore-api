@@ -4,7 +4,8 @@ module.exports = (app) => {
     // Lấy tất cả collection mới cập nhật giới hạn số lượng
     app.post('/v1/collection/limit', collection.findAllCollectionLimit);
 
-
+    // Lấy thông tin của một bộ phim theo metaKey
+    app.post('/v1/collection/metaKey', collection.findOneFromKey);
 
 
     // Tạo 1 collection

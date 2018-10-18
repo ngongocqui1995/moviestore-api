@@ -144,15 +144,15 @@ exports.findAllLimit = (req, res) => {
 
 // Lấy tất cả collection mới cập nhật có giới hạn số lượng
 exports.findAllCollectionLimit = (req, res) => {
-    let limit = Number(req.body.limit);
+    let limit = Number(req.body.limit)
     let projection = req.body.projection
-    let indexPage = Number(req.body.indexPage);
-    let index = indexPage === 1 ? 0 : Number(limit*indexPage - limit);
+    let indexPage = Number(req.body.indexPage)
+    let index = indexPage === 1 ? 0 : Number(limit*indexPage - limit)
 
     if(!isNaN(limit) && !isNaN(indexPage)){
         Collection.find({}, projection).sort({ updatedAt: -1 }).limit(limit).skip(index)
         .then(result => {
-            res.send(result);
+            res.send(result)
         }).catch(err => {
             console.log(err)
             res.send([])
@@ -160,7 +160,7 @@ exports.findAllCollectionLimit = (req, res) => {
     }else{
         res.send([])
     }
-};
+}
 
 // Lấy tất cả collection mới cập nhật theo thể loại
 exports.findAllCollectionCategory = (req, res) => {
@@ -226,25 +226,17 @@ exports.findOne = (req, res) => {
 
 // Tìm 1 collection theo key
 exports.findOneFromKey = (req, res) => {
-    Collection.find({key: req.params.collectionKey }, { "videos.urlReal": 0, "videos.otherLink.urlReal": 0 })
+    let metaKey = req.body.metaKey
+    let projection = req.body.projection
+    console.log(projection)
+    Collection.find({ key: metaKey }, projection)
     .then(result => {
-        if(!result) {
-            return res.status(404).send({
-                message: "collection not found with id " + req.params.collectionId
-            });            
-        }
-        res.send(result);
+        res.send(result)    
     }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "collection not found with id " + req.params.collectionId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error retrieving collection with id " + req.params.collectionId
-        });
-    });
-};
+        console.log(err)
+        res.send([])
+    })
+}
 
 // Tìm 1 collection theo id
 exports.findOneCollection = (req, res) => {
