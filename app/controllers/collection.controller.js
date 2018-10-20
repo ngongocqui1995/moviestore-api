@@ -240,22 +240,25 @@ exports.findOneFromKey = (req, res) => {
 
 exports.getLinkVideo = (req, res) => {
     let url = req.body.url
-    let token = req.body.token
 
-    User.find({permission: "admin", username: "admin@gmail.com"}, 
-    { codeAdmin: 1, codeVideo: 1, permission: 1, username: 1 })
-    Collection.aggregate([
+    let user = User.find({permission: "admin", username: "admin@gmail.com"}, 
+    { codeVideo: 1, _id: 0 })
+    let collection = Collection.aggregate([
         { $match: {"videos.episodes.url": url} },
         { $unwind: "$videos" },
         { $project: { videos: "$videos" } },
         { $project: { episodes: "$videos.episodes" } },
         { $unwind: "$episodes" },
         { $match: { "episodes.url": url } },
-        { $project: { linkVideo: "$episodes.linkVideo" } }
+        { $project: { linkVideo: "$episodes.linkVideo", _id: 0 } }
     ])
-    Collection.find({ key: metaKey }, projection)
-    .then(result => {
-        res.send(result)    
+    Promise.all([user, collection])
+    .then((result) => {
+        let linkVideo = ""
+        if(result[0][0].codeVideo !== undefined && result[1][0].linkVideo !== undefined){
+            linkVideo = result[1][0].linkVideo + result[0][0].codeVideo
+        }
+        res.send(linkVideo)
     }).catch(err => {
         console.log(err)
         res.send([])

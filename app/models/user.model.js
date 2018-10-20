@@ -6,7 +6,6 @@ const UserSchema = mongoose.Schema({
     permission: String,
     name: String,
     codeVideo: String,
-    codeAdmin: String
 }, {
     timestamps: true
 });
