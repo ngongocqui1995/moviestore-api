@@ -1,4 +1,5 @@
 const Collection = require('../models/collection.model.js');
+const User = require('../models/user.model.js');
 var request = require('request');
 var moment = require('moment');
 
@@ -228,7 +229,30 @@ exports.findOne = (req, res) => {
 exports.findOneFromKey = (req, res) => {
     let metaKey = req.body.metaKey
     let projection = req.body.projection
-    console.log(projection)
+    Collection.find({ key: metaKey }, projection)
+    .then(result => {
+        res.send(result)    
+    }).catch(err => {
+        console.log(err)
+        res.send([])
+    })
+}
+
+exports.getLinkVideo = (req, res) => {
+    let url = req.body.url
+    let token = req.body.token
+
+    User.find({permission: "admin", username: "admin@gmail.com"}, 
+    { codeAdmin: 1, codeVideo: 1, permission: 1, username: 1 })
+    Collection.aggregate([
+        { $match: {"videos.episodes.url": url} },
+        { $unwind: "$videos" },
+        { $project: { videos: "$videos" } },
+        { $project: { episodes: "$videos.episodes" } },
+        { $unwind: "$episodes" },
+        { $match: { "episodes.url": url } },
+        { $project: { linkVideo: "$episodes.linkVideo" } }
+    ])
     Collection.find({ key: metaKey }, projection)
     .then(result => {
         res.send(result)    
