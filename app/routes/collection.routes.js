@@ -8,7 +8,7 @@ module.exports = (app) => {
     app.post('/v1/collection/metaKey', collection.findOneFromKey);
 
     // Lấy thông tin link Video
-    app.post('/v1/video', collection.getLinkVideo);
+    app.post('/v1/movie/video', collection.getLinkVideo);
 
 
     // Tạo 1 collection

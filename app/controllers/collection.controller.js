@@ -4,6 +4,26 @@ var request = require('request');
 var moment = require('moment');
 
 
+var tokenTime = 3600; // 1 phút cho token tính bằng mili giây
+var jwt = require('jsonwebtoken');
+var passportJWT = require("passport-jwt");
+var ExtractJwt = passportJWT.ExtractJwt;
+var JwtStrategy = passportJWT.Strategy;
+var passport = require("passport");
+
+var jwtOptions = {}
+jwtOptions.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+jwtOptions.secretOrKey = '21aa6f321956308351b6a327a24e1c6ec797f7892bdef733230f06c8a7ab40e9';
+
+var strategy = new JwtStrategy(jwtOptions, function (jwt_payload, next) {
+    console.log('payload received', jwt_payload);
+    next(null, jwt_payload)
+});
+
+passport.use(strategy);
+
+
+
 // Tạo 1 collection
 exports.create = async(req, res) => {
     if(!req.body.title) {
@@ -254,14 +274,17 @@ exports.getLinkVideo = (req, res) => {
     ])
     Promise.all([user, collection])
     .then((result) => {
-        let linkVideo = ""
+        let token = ""
         if(result[0][0].codeVideo !== undefined && result[1][0].linkVideo !== undefined){
             linkVideo = result[1][0].linkVideo + result[0][0].codeVideo
+
+            let payload = {linkVideo: linkVideo, exp: Math.floor(Date.now() / 1000) + tokenTime}
+            token = jwt.sign(payload, jwtOptions.secretOrKey);
         }
-        res.send(linkVideo)
+        res.send({token: token})
     }).catch(err => {
         console.log(err)
-        res.send([])
+        res.send({token: ""})
     })
 }
 
